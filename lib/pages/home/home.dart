@@ -36,7 +36,7 @@ class HomePage extends StatelessWidget {
                           onPressed: () {
                           },
                           child: const Text('Fluttering Button'),
-                        ).createButton(1),
+                        ).createButton(1, 12, true),
 
                             ),
                           ],
@@ -56,3 +56,4 @@ class HomePage extends StatelessWidget {
       );
   }
 }
+

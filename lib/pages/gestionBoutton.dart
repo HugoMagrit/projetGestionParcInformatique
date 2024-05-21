@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projetp4_flutter/pages/bdd.dart';
+import 'dart:async';
 
 class ButtonSector extends StatelessWidget {
   final VoidCallback onPressed;
@@ -16,7 +17,7 @@ class ButtonSector extends StatelessWidget {
   }
   DataBase bdd = DataBase();
 
-    createButton(int numSector)
+    createButton(int numSector, double sectorConso, bool sectorState)
     {
       return ElevatedButton(
           style: ButtonStyle(
@@ -36,8 +37,8 @@ class ButtonSector extends StatelessWidget {
           child: Column(
             children: [
               Text('Secteur $numSector'),
-              Text('Conso: '),
-              Text('Etat: '),
+              Text('Conso: $sectorConso'),
+              Text('Etat: ${sectorState ? 'Allumé' : 'Éteint'}'),
             ],
           )
         );
@@ -46,4 +47,27 @@ class ButtonSector extends StatelessWidget {
     eventButton(int numSector) {
 
     }
+}
+
+class TimerManager {
+  Timer? _timer;
+  final int id;
+  final Function getConso;
+  final Function getStateSector;
+
+  TimerManager({
+    required this.id,
+    required this.getConso,
+    required this.getStateSector,
+  });
+
+  void startTimer(Duration interval, Function callback) {
+    _timer = Timer.periodic(interval, (timer) {
+      callback();
+    });
+  }
+
+  void stopTimer() {
+    _timer?.cancel();
+  }
 }
