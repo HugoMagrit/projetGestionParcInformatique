@@ -29,11 +29,17 @@ class ButtonSector extends StatelessWidget {
             minimumSize: MaterialStateProperty.all<Size>(const Size(250, 350)),
             ),
           onPressed: () async {
-            bdd.getSector().then((sector) {
+            bdd.getStateSector(1).then((sector) {
               print('Nombre de secteurs : $sector');
             });
           },
-          child: Text('Secteur $numSector'),
+          child: Column(
+            children: [
+              Text('Secteur $numSector'),
+              Text('Conso: '),
+              Text('Etat: '),
+            ],
+          )
         );
     }
 
