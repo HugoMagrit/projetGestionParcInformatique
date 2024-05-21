@@ -8,7 +8,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DataBase bdd = DataBase();
-    ButtonSector buttonSector = ButtonSector();
     return Scaffold(
       body: Column(
         children: [
@@ -33,36 +32,12 @@ class HomePage extends StatelessWidget {
                     Positioned(
                         top: 20,
                         left: 20,
-                        child: Column(
-                          children: [
-                          Center(
-                            child: SizedBox(
-                              width: 250,
-                              height: 350,
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                bdd.getSector().then((sector){
-                                  print('Nombre de secteurs : $sector');
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.zero,
-                                ),
-                              ),
-                              child: const Column(
-                                children: [
-                                  Text('Secteur n'),
-                                  Text('Consommation'),
-                                  Text('Etat du secteur'),
-                                      ]
-                                    )
-                                  )
-                                )
-                                )
-                                ],
-                              )
+                        child: ButtonSector(
+                          onPressed: () {
+                          },
+                          child: const Text('Fluttering Button'),
+                        ).createButton(1),
+
                             ),
                           ],
                         )
