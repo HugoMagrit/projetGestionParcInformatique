@@ -17,7 +17,6 @@ class DataBase {
     final request = await conn.execute(
         'SELECT id_secteur FROM secteur');
     int sector=request.length;
-    conn.closed;
     return sector;
   }
 
@@ -39,7 +38,6 @@ class DataBase {
     if(consoMachine.isNotEmpty) {
       conso += consoMachine[0][0] as double;
     }
-    conn.closed;
     return conso;
     }
 
@@ -50,7 +48,6 @@ class DataBase {
           'SELECT etat_secteur FROM secteur WHERE id_secteur=$numSector'
       );
       retour=request[0][0] as bool;
-      conn.closed;
       return retour;
     }
 

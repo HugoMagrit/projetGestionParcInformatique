@@ -28,7 +28,7 @@ class _ButtonSectorState extends State<ButtonSector> {
     super.initState();
     _conso = 0;
     _state = false;
-    widget.timerManager.startTimer(const Duration(seconds: 10), () {
+    widget.timerManager.startTimer(const Duration(seconds: 60), () {
       setState(() {});
     });
   }
@@ -53,15 +53,21 @@ class _ButtonSectorState extends State<ButtonSector> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Secteur $widget.sector'),
+          Text('Secteur ${widget.sector}'),
           FutureBuilder<bool>(
             future: widget.timerManager.getStateSector(widget.sector),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
               } else {
-                _state = snapshot.data!;
-                return Text('État : ${_state ? 'Allumé' : 'Éteint'}');
+                final state = snapshot.data;
+                if(state != null) {
+                  _state = state;
+                  return Text('État : ${_state ? 'Allumé' : 'Éteint'}');
+                }
+                else {
+                  return const Text('Problème lié à la base de données');
+                }
               }
             },
           ),
@@ -74,8 +80,12 @@ class _ButtonSectorState extends State<ButtonSector> {
                 final conso = snapshot.data;
                 if (conso != null) {
                   _conso = conso;
+                  return Text('Consommation : ${_conso}W');
                 }
-                return Text('Consommation : ${_conso}W');
+                else
+                  {
+                    return const Text('Problème lié à la base de données');
+                  }
               }
             },
           ),
