@@ -16,6 +16,20 @@ class _HomePageState extends State<HomePage> {
   late Timer _timer;
   List<Widget> buttons = [];
 
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 20), (timer) {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.timerManager.stopTimer();
+    super.dispose();
+  }
+
   Future<void> sectorButtons() async {
     final sectorCount = await DataBase().getSector();
     print('Je suis passé ici');
@@ -59,10 +73,10 @@ class _HomePageState extends State<HomePage> {
                     Image.asset('assets/Images/planSalle.png'),
                     Stack(
                         children: buttons
-                              ),
-                              ]
-                            )
-                          ),
+                    ),
+                  ]
+              )
+          ),
 
           Container(
             color: Colors.grey,
