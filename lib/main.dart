@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:projetp4_flutter/pages/gestionBoutton.dart';
 import 'package:projetp4_flutter/pages/home/home.dart';
+import 'package:projetp4_flutter/pages/bdd.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,10 +12,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    DataBase bdd = DataBase();
+    return MaterialApp(
       title: 'Projet Gestion Energetique',
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
-      );
+      home: HomePage(timerManager: TimerManager(id: 1, getConso: bdd.getConso, getStateSector: bdd.getStateSector)),
+    );
   }
 }
