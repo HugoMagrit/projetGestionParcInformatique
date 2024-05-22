@@ -1,42 +1,95 @@
 import 'package:flutter/material.dart';
-import 'package:projetp4_flutter/pages/bdd.dart';
 import 'dart:async';
 
-class ButtonSector extends StatelessWidget {
-  final TimerManager timerManager;
-  final VoidCallback onPressed;
-  final Widget child;
+import 'package:projetp4_flutter/pages/home/home.dart';
 
-  ButtonSector({super.key, required this.timerManager, required this.onPressed, required this.child});
+class ButtonSector extends StatefulWidget {
+  final TimerManager timerManager;
+  final int sector;
+  final VoidCallback onPressed;
+
+  const ButtonSector({
+    super.key,
+    required this.timerManager,
+    required this.sector,
+    required this.onPressed,
+  });
+
+  @override
+  _ButtonSectorState createState() => _ButtonSectorState();
+}
+
+class _ButtonSectorState extends State<ButtonSector> {
+  late double _conso;
+  late bool _state;
+
+  @override
+  void initState() {
+    super.initState();
+    _conso = 0;
+    _state = false;
+    widget.timerManager.startTimer(const Duration(seconds: 10), () {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.timerManager.stopTimer();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: onPressed,
-      child: child,
-    );
-  }
-
-  DataBase bdd = DataBase();
-
-  createButton(int numSector, double sectorConso, bool sectorState) {
-    return ElevatedButton(
-        style: ButtonStyle(
+      onPressed: widget.onPressed,
+      style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-    RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(0),
-    ))), onPressed: () async { bdd.getStateSector(1).then((sector) {
-      print('Etat du secteur $numSector: $sector');
-    }); }, child: null,);
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(0),),
+        ),
+        minimumSize: MaterialStateProperty.all<Size>(const Size(250, 350)),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Secteur $widget.sector'),
+          FutureBuilder<bool>(
+            future: widget.timerManager.getStateSector(widget.sector),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else {
+                _state = snapshot.data!;
+                return Text('État : ${_state ? 'Allumé' : 'Éteint'}');
+              }
+            },
+          ),
+          FutureBuilder<double>(
+            future: widget.timerManager.getConso(widget.sector),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else {
+                final conso = snapshot.data;
+                if (conso != null) {
+                  _conso = conso;
+                }
+                return Text('Consommation : ${_conso}W');
+              }
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
 
 class TimerManager {
-  Timer? _timer;
   final int id;
-  final Function getConso;
-  final Function getStateSector;
+  final Future<double> Function(int) getConso;
+  final Future<bool> Function(int) getStateSector;
+  Timer? _timer;
 
   TimerManager({
     required this.id,
@@ -44,13 +97,14 @@ class TimerManager {
     required this.getStateSector,
   });
 
-  void startTimer(Duration interval, Function callback) {
-    _timer = Timer.periodic(interval, (timer) {
+  void startTimer(Duration duration, VoidCallback callback) {
+    _timer = Timer.periodic(duration, (timer) {
       callback();
     });
   }
 
   void stopTimer() {
     _timer?.cancel();
+    _timer = null;
   }
 }

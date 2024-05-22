@@ -1,10 +1,9 @@
 import 'package:postgres/postgres.dart';
 
 class DataBase {
-
   late Connection conn;
 
-  Future<void> ConnectionBdD () async {
+  Future<void> connectionBdD () async {
     conn = await Connection.open(Endpoint(
       host: '192.168.1.252',
       database: 'projetGestionParcInformatique',
@@ -14,41 +13,44 @@ class DataBase {
   }
 
   Future<int> getSector() async {
-    await ConnectionBdD();
+    await connectionBdD();
     final request = await conn.execute(
         'SELECT id_secteur FROM secteur');
     int sector=request.length;
+    conn.closed;
     return sector;
   }
 
   Future<double> getConso(int numSector) async {
-    await ConnectionBdD();
-    final conso_ecran = await conn.execute(
+    await connectionBdD();
+    final consoEcran = await conn.execute(
         'SELECT conso_module FROM mesures WHERE secteur_id=$numSector AND type_module=FALSE ORDER BY date_conso_module DESC LIMIT 1'
     );
 
-    final conso_machine = await conn.execute(
+    final consoMachine = await conn.execute(
         'SELECT conso_module FROM mesures WHERE secteur_id=$numSector AND type_module=TRUE ORDER BY date_conso_module DESC LIMIT 1'
     );
 
     double conso = 0.0;
-    if(conso_ecran.isNotEmpty) {
-      conso += conso_ecran[0][0] as double;
+    if(consoEcran.isNotEmpty) {
+      conso += consoEcran[0][0] as double;
     }
 
-    if(conso_machine.isNotEmpty) {
-      conso += conso_machine[0][0] as double;
+    if(consoMachine.isNotEmpty) {
+      conso += consoMachine[0][0] as double;
     }
+    conn.closed;
     return conso;
     }
 
     Future<bool> getStateSector(int numSector) async {
       bool retour=false;
-      await ConnectionBdD();
+      await connectionBdD();
       final request = await conn.execute(
           'SELECT etat_secteur FROM secteur WHERE id_secteur=$numSector'
       );
       retour=request[0][0] as bool;
+      conn.closed;
       return retour;
     }
 

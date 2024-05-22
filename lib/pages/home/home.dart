@@ -14,24 +14,30 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late Timer _timer;
+  List<Widget> buttons = [];
 
-  @override
-  void initState() {
-    super.initState();
-    widget.timerManager.startTimer(const Duration(seconds: 30), () {
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    widget.timerManager.stopTimer();
-    super.dispose();
+  Future<void> sectorButtons() async {
+    final sectorCount = await DataBase().getSector();
+    print('Je suis passé ici');
+    for (int i = 1; i <= sectorCount; i++) {
+      final button = ButtonSector(
+        timerManager: widget.timerManager,
+        onPressed: () {},
+        sector: i,
+      );
+      buttons.add(
+        Positioned(
+          top: 20,
+          left: 20 * i.toDouble(),
+          child: button,
+        ),
+      );
+    }
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    DataBase bdd = DataBase();
     return Scaffold(
       body: Column(
         children: [
@@ -41,36 +47,31 @@ class _HomePageState extends State<HomePage> {
             height: 150,
             width: 9000,
             child: const Center(
-              child: Text('Les pages'),
+              child: Text(''),
             ),
           ),
 
           SizedBox(
-            height: 450,
+              height: 465,
+              width: 1280,
+              child: Stack(
+                  children: <Widget>[
+                    Image.asset('assets/Images/planSalle.png'),
+                    Stack(
+                        children: buttons
+                              ),
+                              ]
+                            )
+                          ),
+
+          Container(
+            color: Colors.grey,
+            height: 125,
             width: 9000,
-            child: Stack(
-              children: <Widget>[
-                Image.asset('assets/planSalle.png'),
-              SizedBox(
-                  width: 300,
-                  height: 300,
-                child: Stack(
-                  children: [
-                  Positioned(
-                    top: 20,
-                    left: 20,
-                    child: ButtonSector(
-                      timerManager: widget.timerManager,
-                      onPressed: () {},
-                      child: const Text('Fluttering Button'),
-                    ).createButton(1, 12, true),
-                  ),
-                  ]
-                )
-              )
-              ]
-              )
-          ),
+            child: const Center(
+              child: Text('Les logs'),
+            ),
+          )
         ],
       ),
     );
