@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:projetp4_flutter/pages/timer.dart';
+import 'package:projetp4_flutter/pages/timer.dart' as timer;
 
 
 class ButtonSector extends StatefulWidget {
-  final TimerManager timerManager;
+  final timer.TimerManager timerManager;
   final int sector;
   final VoidCallback onPressed;
 
