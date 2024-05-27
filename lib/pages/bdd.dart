@@ -5,7 +5,8 @@ class DataBase {
 
   Future<void> connectionBdD () async {
     conn = await Connection.open(Endpoint(
-      host: '192.168.1.252',
+      host: '192.168.1.252', //Avec le routeur wifiEnergy
+      //host: '192.168.178.202',
       database: 'projetGestionParcInformatique',
       username: 'hmagrit',
       password: 'BjhGeq9F',
@@ -39,7 +40,7 @@ class DataBase {
       conso += consoMachine[0][0] as double;
     }
     return conso;
-    }
+  }
 
     Future<bool> getStateSector(int numSector) async {
       bool retour=false;
@@ -50,17 +51,4 @@ class DataBase {
       retour=request[0][0] as bool;
       return retour;
     }
-
-/*getBackground() async {
-    final conn = await Connection.open(Endpoint(
-      host: '192.168.1.252', //IP partage de connexion 192.168.178.202
-      database: 'projetGestionParcInformatique',
-      username: 'hmagrit',
-      password: 'BjhGeq9F',
-    )
-    );
-    final results = await conn.execute(
-        'SELECT plan_locaux.data_plan FROM plan_locaux WHERE id_plan=1');
-  }*/
-
 }

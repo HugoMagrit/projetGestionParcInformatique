@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:projetp4_flutter/pages/timer.dart';
 
-import 'package:projetp4_flutter/pages/home/home.dart';
 
 class ButtonSector extends StatefulWidget {
   final TimerManager timerManager;
@@ -16,10 +16,10 @@ class ButtonSector extends StatefulWidget {
   });
 
   @override
-  _ButtonSectorState createState() => _ButtonSectorState();
+  ButtonSectorState createState() => ButtonSectorState();
 }
 
-class _ButtonSectorState extends State<ButtonSector> {
+class ButtonSectorState extends State<ButtonSector> {
   late double _conso;
   late bool _state;
 
@@ -28,7 +28,7 @@ class _ButtonSectorState extends State<ButtonSector> {
     super.initState();
     _conso = 0;
     _state = false;
-    widget.timerManager.startTimer(const Duration(seconds: 60), () {
+    widget.timerManager.startTimer(const Duration(seconds: 300), () {
       setState(() {});
     });
   }
@@ -59,16 +59,17 @@ class _ButtonSectorState extends State<ButtonSector> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
-              } else {
-                final state = snapshot.data;
-                if(state != null) {
-                  _state = state;
+              }
+              else {
+                final state = snapshot.data!;
+                if (_state != null) {
+                  _state=state;
                   return Text('État : ${_state ? 'Allumé' : 'Éteint'}');
                 }
                 else {
-                  return const Text('Problème lié à la base de données');
+                  return Text('Problème base de données');
                 }
-              }
+                  }
             },
           ),
           FutureBuilder<double>(
@@ -82,39 +83,14 @@ class _ButtonSectorState extends State<ButtonSector> {
                   _conso = conso;
                   return Text('Consommation : ${_conso}W');
                 }
-                else
-                  {
-                    return const Text('Problème lié à la base de données');
-                  }
+                else{
+                  return const Text('Problème base de données');
+                }
               }
             },
           ),
         ],
       ),
     );
-  }
-}
-
-class TimerManager {
-  final int id;
-  final Future<double> Function(int) getConso;
-  final Future<bool> Function(int) getStateSector;
-  Timer? _timer;
-
-  TimerManager({
-    required this.id,
-    required this.getConso,
-    required this.getStateSector,
-  });
-
-  void startTimer(Duration duration, VoidCallback callback) {
-    _timer = Timer.periodic(duration, (timer) {
-      callback();
-    });
-  }
-
-  void stopTimer() {
-    _timer?.cancel();
-    _timer = null;
   }
 }

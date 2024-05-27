@@ -18,9 +18,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    sectorButtons();
     super.initState();
-    _timer = Timer.periodic(const Duration(seconds: 60), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 20), (timer) {
       setState(() {});
     });
   }
@@ -33,36 +32,17 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> sectorButtons() async {
     final sectorCount = await DataBase().getSector();
-    final pageCount = (sectorCount / 4).ceil();
+    print('Je suis passé ici');
     for (int i = 1; i <= sectorCount; i++) {
       final button = ButtonSector(
         timerManager: widget.timerManager,
         onPressed: () {},
         sector: i,
       );
-      double x=120.0;
-      double y=300.0;
-      switch (i) {
-        case 1:
-          x=20.0;
-          y=20.0;
-        case 2:
-          x = 370.0;
-          y=70.0;
-          break;
-        case 3:
-          x = 660.0;
-          y=70.0;
-          break;
-        case 4:
-          x = 1010.0;
-          y=70.0;
-          break;
-      }
       buttons.add(
         Positioned(
-          top: y,
-          left: x,
+          top: 20,
+          left: 20 * i.toDouble(),
           child: button,
         ),
       );

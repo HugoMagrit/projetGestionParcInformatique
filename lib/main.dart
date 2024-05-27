@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:projetp4_flutter/pages/gestionBoutton.dart';
+import 'package:projetp4_flutter/pages/home/gestionBoutton.dart';
 import 'package:projetp4_flutter/pages/home/home.dart';
 import 'package:projetp4_flutter/pages/bdd.dart';
+import 'package:projetp4_flutter/pages/timer.dart';
 
 void main() {
   runApp(const MyApp());
