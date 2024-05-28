@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:projetp4_flutter/pages/bdd.dart';
+import 'package:projetp4_flutter/metier/bdd.dart';
 import 'package:projetp4_flutter/pages/home/gestionBoutton.dart';
-import 'package:projetp4_flutter/pages/timer.dart' as timer;
+import 'package:projetp4_flutter/metier/timer.dart' as timer;
 import 'package:projetp4_flutter/pages/avecPanel/panelSector.dart';
+import 'package:projetp4_flutter/metier/ConsulterLesMesuresActuelles.dart';
 
 class HomePage extends StatefulWidget {
   final timer.TimerManager timerManager;
@@ -18,6 +19,7 @@ class _HomePageState extends State<HomePage> {
   late Timer timer;
   List<List<Widget>> pages = [];
   int currentPage = 0;
+  List<SectorData> sectorDataList = [];
 
   @override
   void initState() {
@@ -26,6 +28,13 @@ class _HomePageState extends State<HomePage> {
     timer = Timer.periodic(const Duration(seconds: 300), (timer) {
       setState(() {});
     });
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    ConsulterLesMesuresActuelles consulter = ConsulterLesMesuresActuelles();
+    sectorDataList = await consulter.consulterLesMesuresActelles();
+    setState(() {});
   }
 
   @override
@@ -137,6 +146,26 @@ class _HomePageState extends State<HomePage> {
             width: double.infinity,
             child: Center(
               child: Text('Les logs', style: TextStyle(color: Colors.grey[300])),
+            ),
+          ),
+
+          Expanded(
+            child: ListView.builder(
+              itemCount: sectorDataList.length,
+              itemBuilder: (context, index) {
+                SectorData sectorData = sectorDataList[index];
+                return Card(
+                  child: Column(
+                    children: [
+                      Text('Secteur ${sectorData.sectorId}'),
+                      Text('État : ${sectorData.sectorState? 'Allumé' : 'Éteint'}'),
+                      Text('Consommation : ${sectorData.consos.join(', ')}W'),
+                      Text('États des machines : ${sectorData.moduleMachineState.keys.map((key) => '$key : ${(sectorData.moduleMachineState[key]?? false)? 'Allumé' : 'Éteint'}').join(', ')}'),
+                      Text('États des écrans : ${sectorData.moduleScreenState.keys.map((key) => '$key : ${(sectorData.moduleScreenState[key]?? false)? 'Allumé' : 'Éteint'}').join(', ')}'),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ],

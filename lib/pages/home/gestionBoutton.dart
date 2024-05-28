@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:projetp4_flutter/pages/timer.dart' as timer;
+import 'package:projetp4_flutter/metier/timer.dart' as timer;
 
 
 class ButtonSector extends StatefulWidget {
