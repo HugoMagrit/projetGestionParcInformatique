@@ -5,8 +5,9 @@ class DataBase {
 
   Future<void> connectionBdD () async {
     conn = await Connection.open(Endpoint(
-      host: '192.168.1.252', //Avec le routeur wifiEnergy
-      //host: '192.168.178.202',
+      //host: '192.168.1.253', //Avec le routeur wifiEnergy en filaire
+      //host: '192.168.1.252',
+      host: '192.168.178.202',
       database: 'projetGestionParcInformatique',
       username: 'hmagrit',
       password: 'BjhGeq9F',

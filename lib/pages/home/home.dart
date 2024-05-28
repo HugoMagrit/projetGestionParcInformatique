@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:projetp4_flutter/pages/bdd.dart';
 import 'package:projetp4_flutter/pages/home/gestionBoutton.dart';
 import 'package:projetp4_flutter/pages/timer.dart' as timer;
+import 'package:projetp4_flutter/pages/avecPanel/panelSector.dart';
 
 class HomePage extends StatefulWidget {
   final timer.TimerManager timerManager;
@@ -82,10 +83,11 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      endDrawer: PanelSector(),
       body: Column(
         children: [
           Container(
-            color: Colors.blueGrey,
+            color: Colors.blueAccent,
             height: 150,
             width: double.infinity,
             child: Row(
@@ -101,9 +103,9 @@ class _HomePageState extends State<HomePage> {
                       },
                       child: Text(
                         'Salle ${index + 1}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: Colors.grey[300],
                           fontSize: 20,
                         ),
                       ),
@@ -113,24 +115,28 @@ class _HomePageState extends State<HomePage> {
               }),
             ),
           ),
-          SizedBox(
-            height: 465,
-            width: 1280,
-            child: Stack(
-              children: <Widget>[
-                Image.asset('assets/Images/planSalle.png'),
-                Stack(
-                  children: pages.isNotEmpty ? pages[currentPage] : [],
-                ),
-              ],
+
+      SizedBox(
+        height: 465,
+        width: 1280,
+        child: Container(
+          color: Colors.grey[300],
+        child: Stack(
+          children: <Widget>[
+            Stack(
+              children: pages.isNotEmpty ? pages[currentPage] : [],
             ),
-          ),
+          ],
+        ),
+        ),
+      ),
+
           Container(
-            color: Colors.grey,
+            color: Colors.blueAccent,
             height: 125,
             width: double.infinity,
-            child: const Center(
-              child: Text('Les logs'),
+            child: Center(
+              child: Text('Les logs', style: TextStyle(color: Colors.grey[300])),
             ),
           ),
         ],

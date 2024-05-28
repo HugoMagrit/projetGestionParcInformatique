@@ -20,6 +20,7 @@ class ButtonSector extends StatefulWidget {
 }
 
 class ButtonSectorState extends State<ButtonSector> {
+  late Timer timer;
   late double _conso;
   late bool _state;
 
@@ -42,9 +43,11 @@ class ButtonSectorState extends State<ButtonSector> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: widget.onPressed,
+      onPressed: () {
+        Scaffold.of(context).openEndDrawer();
+      },
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+        backgroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey),
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(0),),
         ),
@@ -53,23 +56,18 @@ class ButtonSectorState extends State<ButtonSector> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Secteur ${widget.sector}'),
+          Text('Secteur ${widget.sector}', style: TextStyle(color: Colors.grey[300])),
           FutureBuilder<bool>(
             future: widget.timerManager.getStateSector(widget.sector),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
-              }
-              else {
+              } else if (snapshot.hasError) {
+                return Text('Problème de base de données', style: TextStyle(color: Colors.grey[300]));
+              } else {
                 final state = snapshot.data!;
-                if (_state != null) {
-                  _state=state;
-                  return Text('État : ${_state ? 'Allumé' : 'Éteint'}');
-                }
-                else {
-                  return Text('Problème base de données');
-                }
-                  }
+                return Text('État : ${state ? 'Allumé' : 'Éteint'}', style: TextStyle(color: Colors.grey[300]));
+              }
             },
           ),
           FutureBuilder<double>(
@@ -77,14 +75,15 @@ class ButtonSectorState extends State<ButtonSector> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Problème de base de données', style: TextStyle(color: Colors.grey[300]));
               } else {
                 final conso = snapshot.data;
                 if (conso != null) {
                   _conso = conso;
-                  return Text('Consommation : ${_conso}W');
-                }
-                else{
-                  return const Text('Problème base de données');
+                  return Text('Consommation : ${_conso}W', style: TextStyle(color: Colors.grey[300]));
+                } else {
+                  return const Text('Problème de base de données');
                 }
               }
             },
