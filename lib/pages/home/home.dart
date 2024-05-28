@@ -116,20 +116,20 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
-      SizedBox(
-        height: 465,
-        width: 1280,
-        child: Container(
-          color: Colors.grey[300],
-        child: Stack(
-          children: <Widget>[
-            Stack(
-              children: pages.isNotEmpty ? pages[currentPage] : [],
+          SizedBox(
+            height: 465,
+            width: 1280,
+            child: Container(
+              color: Colors.grey[300],
+            child: Stack(
+              children: <Widget>[
+                Stack(
+                  children: pages.isNotEmpty ? pages[currentPage] : [],
+                ),
+              ],
             ),
-          ],
-        ),
-        ),
-      ),
+            ),
+          ),
 
           Container(
             color: Colors.blueAccent,

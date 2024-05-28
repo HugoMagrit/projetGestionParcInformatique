@@ -21,16 +21,14 @@ class ButtonSector extends StatefulWidget {
 
 class ButtonSectorState extends State<ButtonSector> {
   late Timer timer;
-  late double _conso;
-  late bool _state;
 
   @override
   void initState() {
     super.initState();
-    _conso = 0;
-    _state = false;
     widget.timerManager.startTimer(const Duration(seconds: 300), () {
-      setState(() {});
+      if(mounted){
+        setState(() {});
+      }
     });
   }
 
@@ -78,13 +76,8 @@ class ButtonSectorState extends State<ButtonSector> {
               } else if (snapshot.hasError) {
                 return Text('Problème de base de données', style: TextStyle(color: Colors.grey[300]));
               } else {
-                final conso = snapshot.data;
-                if (conso != null) {
-                  _conso = conso;
-                  return Text('Consommation : ${_conso}W', style: TextStyle(color: Colors.grey[300]));
-                } else {
-                  return const Text('Problème de base de données');
-                }
+                final conso = snapshot.data!;
+                return Text('Consommation : ${conso}W', style: TextStyle(color: Colors.grey[300]));
               }
             },
           ),
