@@ -1,63 +1,75 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:projetp4_flutter/metier/bdd.dart';
-import 'package:projetp4_flutter/pages/home/gestionBoutton.dart';
-import 'package:projetp4_flutter/metier/timer.dart' as timer;
 import 'package:projetp4_flutter/pages/avecPanel/panelSector.dart';
+import 'package:projetp4_flutter/pages/home/gestionBoutton.dart';
+import 'package:projetp4_flutter/metier/bdd.dart';
+import 'package:projetp4_flutter/metier/timer.dart';
 import 'package:projetp4_flutter/metier/ConsulterLesMesuresActuelles.dart';
 
-class HomePage extends StatefulWidget {
-  final timer.TimerManager timerManager;
+class HomePage extends StatefulWidget
+{
+  final ConsulterLesMesuresActuelles consulterLesMesuresActuelles;
+  final TimerManager timerManager;
 
-  const HomePage({super.key, required this.timerManager});
+  const HomePage(
+      {
+        super.key,
+        required this.consulterLesMesuresActuelles,
+        required this.timerManager
+      }
+      );
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  late Timer timer;
+class _HomePageState extends State<HomePage>
+{
   List<List<Widget>> pages = [];
   int currentPage = 0;
   List<SectorData> sectorDataList = [];
 
   @override
-  void initState() {
+  void initState()
+  {
     super.initState();
     sectorButtons();
-    timer = Timer.periodic(const Duration(seconds: 300), (timer) {
-      setState(() {});
-    });
-    loadData();
-  }
-
-  Future<void> loadData() async {
-    ConsulterLesMesuresActuelles consulter = ConsulterLesMesuresActuelles();
-    sectorDataList = await consulter.consulterLesMesuresActelles();
-    setState(() {});
+    widget.consulterLesMesuresActuelles.startTimer(const Duration(seconds: 300), (List<SectorData> newSectorDataList)
+    {
+      setState(()
+      {
+        sectorDataList = newSectorDataList;
+      }
+      );
+    }
+    );
   }
 
   @override
-  void dispose() {
-    widget.timerManager.stopTimer();
+  void dispose()
+  {
+    widget.consulterLesMesuresActuelles.stopTimer();
     super.dispose();
   }
 
-  Future<void> sectorButtons() async {
+  Future<void> sectorButtons() async
+  {
     final sectorCount = await DataBase().getSector();
     final pageCount = (sectorCount / 4).ceil();
 
-    for (int i = 0; i < pageCount; i++) {
+    for (int i = 0; i < pageCount; i++)
+    {
       List<Widget> pageButtons = [];
-      for (int j = i * 4; j < (i + 1) * 4 && j < sectorCount; j++) {
+      for (int j = i * 4; j < (i + 1) * 4 && j < sectorCount; j++)
+      {
         final button = ButtonSector(
-          timerManager: widget.timerManager,
+          consulterLesMesuresActuelles: widget.consulterLesMesuresActuelles,
           onPressed: () {},
           sector: j + 1,
         );
 
         double x = 120.0, y = 300.0;
-        switch (j % 4) {
+        switch (j % 4)
+        {
           case 0:
             x = 20.0;
             y = 20.0;
@@ -90,7 +102,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)
+  {
     return Scaffold(
       endDrawer: PanelSector(),
       body: Column(
@@ -101,12 +114,15 @@ class _HomePageState extends State<HomePage> {
             width: double.infinity,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(pages.length, (index) {
+              children: List.generate(pages.length, (index)
+              {
                 return Expanded(
                   child: Center(
                     child: InkWell(
-                      onTap: () {
-                        setState(() {
+                      onTap: ()
+                      {
+                        setState(()
+                        {
                           currentPage = index;
                         });
                       },
@@ -130,13 +146,13 @@ class _HomePageState extends State<HomePage> {
             width: 1280,
             child: Container(
               color: Colors.grey[300],
-            child: Stack(
-              children: <Widget>[
-                Stack(
-                  children: pages.isNotEmpty ? pages[currentPage] : [],
-                ),
-              ],
-            ),
+              child: Stack(
+                children: <Widget>[
+                  Stack(
+                    children: pages.isNotEmpty ? pages[currentPage] : [],
+                  ),
+                ],
+              ),
             ),
           ),
 
@@ -158,10 +174,10 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     children: [
                       Text('Secteur ${sectorData.sectorId}'),
-                      Text('État : ${sectorData.sectorState? 'Allumé' : 'Éteint'}'),
+                      Text('État : ${sectorData.sectorState ? 'Allumé' : 'Éteint'}'),
                       Text('Consommation : ${sectorData.consos.join(', ')}W'),
-                      Text('États des machines : ${sectorData.moduleMachineState.keys.map((key) => '$key : ${(sectorData.moduleMachineState[key]?? false)? 'Allumé' : 'Éteint'}').join(', ')}'),
-                      Text('États des écrans : ${sectorData.moduleScreenState.keys.map((key) => '$key : ${(sectorData.moduleScreenState[key]?? false)? 'Allumé' : 'Éteint'}').join(', ')}'),
+                      Text('États des machines : ${sectorData.moduleMachineState.keys.map((key) => '$key : ${(sectorData.moduleMachineState[key] ?? false) ? 'Allumé' : 'Éteint'}').join(', ')}'),
+                      Text('États des écrans : ${sectorData.moduleScreenState.keys.map((key) => '$key : ${(sectorData.moduleScreenState[key] ?? false) ? 'Allumé' : 'Éteint'}').join(', ')}'),
                     ],
                   ),
                 );

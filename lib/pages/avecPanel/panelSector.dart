@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
-class PanelSector extends StatelessWidget {
+class PanelSector extends StatelessWidget
+{
   const PanelSector({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)
+  {
     return Container(
       width: 500,
       height: double.infinity,
@@ -16,27 +18,33 @@ class PanelSector extends StatelessWidget {
             width: double.infinity,
             child: Container(
               color: Colors.black,
+              //TODO
                 child: Text('Selection du graphique', style: TextStyle(color: Colors.blueGrey),),
             ),
           ),
 
           Container(
               child: const Column(
-                children: [
+                children:
+                  [
+                    //TODO
                   Text('Consommation des différents modules', style: TextStyle(color: Colors.blueGrey),)
                   ]
                 )
               ),
 
           Container(
+            //TODO
               child: Text('Activer modules machines', style: TextStyle(color: Colors.blueGrey),)
           ),
 
           Container(
+            //TODO
               child: Text('Activer modules écrans', style: TextStyle(color: Colors.blueGrey),)
           ),
 
           Container(
+            //TODO
               child: Text('Activer secteur', style: TextStyle(color: Colors.blueGrey),)
           ),
         ],
