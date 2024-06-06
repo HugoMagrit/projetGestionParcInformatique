@@ -132,7 +132,7 @@ class DataBase
 
         case "moduleMachine":
           final request = await conn.execute(
-              'SELECT etat_module_machine, mac_module_machine FROM module_machine WHERE secteur_id=$numSector'
+              'SELECT mac_module_machine, etat_module_machine FROM module_machine WHERE secteur_id=$numSector'
           );
           for (final row in request)
           {
@@ -142,7 +142,7 @@ class DataBase
 
         case "moduleScreen":
           final request = await conn.execute(
-              'SELECT etat_module_ecran, mac_module_ecran FROM module_ecran WHERE secteur_id=$numSector'
+              'SELECT mac_module_ecran, etat_module_ecran FROM module_ecran WHERE secteur_id=$numSector'
           );
           for (final row in request)
           {
