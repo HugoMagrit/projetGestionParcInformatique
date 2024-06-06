@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
 
+// Classe qui gère le timer
 class TimerManager
 {
   Timer? _timer;

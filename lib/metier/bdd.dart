@@ -1,7 +1,10 @@
 import 'package:postgres/postgres.dart';
 
+// Classe pour la gestion de la base de données
 class DataBase
 {
+
+  // Connexion à la base de données
   Future<Connection> connectionBdD () async
   {
     return await Connection.open(Endpoint(
@@ -14,6 +17,7 @@ class DataBase
     ));
   }
 
+  // Récupère le nombre de secteurs
   Future<int> getSector() async
   {
     final Connection conn = await connectionBdD();
@@ -25,9 +29,9 @@ class DataBase
     return sector;
   }
 
+  // Récupère la consommation en fonction du secteur et si on veut instantané ou sur 24h
   Future<List<double>> getConso(bool time, int numSector) async
   {
-    print('getConso appelé pour le secteur $numSector');
     List<double> siNULL = [-1];
     List<double> consos = [];
     final Connection conn = await connectionBdD();
@@ -47,7 +51,6 @@ class DataBase
         consos.add(consoEcran.first[0] as double);
         consos.add(consoMachine.first[0] as double);
         consos[0] = consos[0] + consos[1];
-        print('Consommation $numSector : $consos');
         return consos;
       }
 
@@ -74,7 +77,8 @@ class DataBase
     }
   }
 
-  Future<double> getConsoModule(int numSector, String module, String typeModule) async
+  // Récupère la consommation des modules
+  Future<double> getConsoModule(int numSector, bool time, String module, String typeModule) async
   {
     final Connection conn = await connectionBdD();
     double conso = 0.0;
@@ -98,6 +102,7 @@ class DataBase
     return conso;
   }
 
+  // Récupère les états en fonction de ce qu'on veut
   Future<Map<String, bool>> getState(String wantedData, int numSector) async
   {
     Map<String, bool> retour = {};
@@ -121,7 +126,7 @@ class DataBase
           );
           for (final row in request)
           {
-            retour[row[0] as String] = row[1] == 't';
+            retour[row[0].toString()] = row[1] == true;
           }
           break;
 
@@ -131,7 +136,7 @@ class DataBase
           );
           for (final row in request)
           {
-            retour[row[0] as String] = row[1] == 't';
+            retour[row[0].toString()] = row[1] == true;
           }
           break;
 
@@ -141,7 +146,7 @@ class DataBase
           );
           for (final row in request)
           {
-            retour[row[0] as String] = row[1] == 't';
+            retour[row[0].toString()] = row[1] == true;
           }
           break;
 
@@ -151,7 +156,7 @@ class DataBase
           );
           for (final row in request)
           {
-            retour[row[0] as String] = row[1] == 't';
+            retour[row[0].toString()] = row[1] == true;
           }
           break;
 
@@ -170,6 +175,7 @@ class DataBase
     return retour;
   }
 
+  // Récupère l'état des machines reliées à un même module machine
   Future<Map<String, bool>> getStateMachine(String moduleMAC) async
   {
     final Connection conn = await connectionBdD();

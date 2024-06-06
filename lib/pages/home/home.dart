@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:projetp4_flutter/pages/avecPanel/panelSector.dart';
 import 'package:projetp4_flutter/pages/home/gestionBoutton.dart';
 import 'package:projetp4_flutter/metier/bdd.dart';
 import 'package:projetp4_flutter/metier/timer.dart';
 import 'package:projetp4_flutter/metier/ConsulterLesMesuresActuelles.dart';
 
+// Page d'accueil de l'application
 class HomePage extends StatefulWidget
 {
   final ConsulterLesMesuresActuelles consulterLesMesuresActuelles;
@@ -22,6 +22,7 @@ class HomePage extends StatefulWidget
   State<HomePage> createState() => _HomePageState();
 }
 
+// Etat de la page d'accueil
 class _HomePageState extends State<HomePage>
 {
   List<List<Widget>> pages = [];
@@ -33,6 +34,7 @@ class _HomePageState extends State<HomePage>
   {
     super.initState();
     sectorButtons();
+    // Démarre le timer pour obtenir les mesures actuelles et les rafraichir toutes les 5 min
     widget.consulterLesMesuresActuelles.startTimer(const Duration(seconds: 300), (List<SectorData> newSectorDataList)
     {
       setState(()
@@ -47,18 +49,23 @@ class _HomePageState extends State<HomePage>
   @override
   void dispose()
   {
+    // Arrête le timer une fois la page fermée
     widget.consulterLesMesuresActuelles.stopTimer();
     super.dispose();
   }
 
+  // Méthode qui créé autant de boutons qu'il y a de secteurs
   Future<void> sectorButtons() async
   {
     final sectorCount = await DataBase().getSector();
+
+    // Calcul du nombre de page à créer
     final pageCount = (sectorCount / 4).ceil();
 
     for (int i = 0; i < pageCount; i++)
     {
       List<Widget> pageButtons = [];
+      // Création et placement des boutons
       for (int j = i * 4; j < (i + 1) * 4 && j < sectorCount; j++)
       {
         final button = ButtonSector(
@@ -87,7 +94,7 @@ class _HomePageState extends State<HomePage>
             y = 70.0;
             break;
         }
-
+        // Ajout du bouton à la page actuelle
         pageButtons.add(
           Positioned(
             top: y,
@@ -101,13 +108,15 @@ class _HomePageState extends State<HomePage>
     setState(() {});
   }
 
+  // Construction de l'interface utilisateur de la page d'accueil
   @override
   Widget build(BuildContext context)
   {
     return Scaffold(
-      endDrawer: PanelSector(),
+      // Corps de page
       body: Column(
         children: [
+          // En-tête qui contient les différentes pages de secteurs
           Container(
             color: Colors.blueAccent,
             height: 150,
@@ -141,6 +150,7 @@ class _HomePageState extends State<HomePage>
             ),
           ),
 
+          // Zone d'affichage des boutons des 4 secteurs de la page
           SizedBox(
             height: 465,
             width: 1280,
@@ -156,6 +166,7 @@ class _HomePageState extends State<HomePage>
             ),
           ),
 
+          // Pieds de la page qui affichera les logs
           Container(
             color: Colors.blueAccent,
             height: 125,
@@ -165,6 +176,7 @@ class _HomePageState extends State<HomePage>
             ),
           ),
 
+          // Affichage des données de secteur
           Expanded(
             child: ListView.builder(
               itemCount: sectorDataList.length,
