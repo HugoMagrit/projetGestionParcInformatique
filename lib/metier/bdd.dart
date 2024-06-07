@@ -78,28 +78,69 @@ class DataBase
   }
 
   // Récupère la consommation des modules
-  Future<double> getConsoModule(int numSector, bool time, String module, String typeModule) async
+  Future<List<double>> getConsoModule(int numSector, bool time, String module, String typeModule) async
   {
     final Connection conn = await connectionBdD();
-    double conso = 0.0;
-    if(typeModule=="machine")
-    {
-      final conso = await conn.execute(
-          'SELECT conso_module FROM mesures WHERE secteur_id=$numSector AND module_machine_mac=$module ORDER BY date_conso_module DESC LIMIT 1'
-      ) as double;
-      await conn.close();
-      return conso;
+    List<double> siNULL = [-1.0];
+    List<double> conso = [];
+    try {
+      if (time == true) {
+        if (typeModule == "machine")
+        {
+          final request = await conn.execute(
+              'SELECT conso_module FROM mesures WHERE secteur_id=$numSector AND module_machine_mac=$module ORDER BY date_conso_module DESC LIMIT 1'
+          );
+          conso.add(request.first[0] as double);
+          return conso;
+        }
+
+        else if (typeModule == "ecran")
+        {
+          final request = await conn.execute(
+              'SELECT conso_module FROM mesures WHERE secteur_id=$numSector AND module_ecran_mac=$module ORDER BY date_conso_module DESC LIMIT 1'
+          );
+          conso.add(request.first[0] as double);
+          return conso;
+        }
+
+        else
+          {
+            return siNULL;
+          }
+      }
+      else
+      {
+        if (typeModule == "machine")
+        {
+          return conso = await conn.execute(
+              'SELECT conso_module FROM mesures WHERE secteur_id=$numSector AND module_machine_mac=$module ORDER BY date_conso_module DESC LIMIT 1'
+          ) as List<double>;
+        }
+
+        else if (typeModule == "ecran")
+        {
+          return conso = await conn.execute(
+              'SELECT conso_module FROM mesures WHERE secteur_id=$numSector AND module_ecran_mac=$module ORDER BY date_conso_module DESC LIMIT 1'
+          ) as List<double>;
+        }
+
+        else
+          {
+            return siNULL;
+          }
+      }
     }
-    else if(typeModule=="ecran")
+
+    catch (e)
     {
-      final conso = await conn.execute(
-          'SELECT conso_module FROM mesures WHERE secteur_id=$numSector AND module_ecran_mac=$module ORDER BY date_conso_module DESC LIMIT 1'
-      ) as double;
-      await conn.close();
-      return conso;
+      print('Erreur lors de la récupération de la consommation du module $module: $e');
+      return siNULL;
     }
-    await conn.close();
-    return conso;
+
+    finally
+        {
+          await conn.close();
+        }
   }
 
   // Récupère les états en fonction de ce qu'on veut

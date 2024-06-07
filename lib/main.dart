@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:projetp4_flutter/metier/timer.dart';
 import 'package:projetp4_flutter/pages/home/home.dart';
 import 'package:projetp4_flutter/metier/bdd.dart';
 import 'package:projetp4_flutter/metier/ConsulterLesMesuresActuelles.dart';
@@ -28,7 +27,6 @@ class MyApp extends StatelessWidget
       debugShowCheckedModeBanner: false,
       home: HomePage(
         consulterLesMesuresActuelles: consulterLesMesuresActuelles,
-        timerManager: TimerManager(),
       ),
     );
   }
