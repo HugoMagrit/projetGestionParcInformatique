@@ -28,19 +28,23 @@ class ConsulterLesMesuresActuelles
     List<double> consos = await m_bdd.getConso(true, sectorId);
     Map<String, bool> moduleMachineStates = await m_bdd.getState("moduleMachine", sectorId);
     Map<String, bool> moduleScreenStates = await m_bdd.getState("moduleScreen", sectorId);
-    Map<String, double> moduleMachineConso = [] as Map<String, double>;
-    Map<String, double> moduleScreenConso = [] as Map<String, double>;
+    Map<String, double> moduleMachineConso = {};
+    Map<String, double> moduleScreenConso = {};
 
-    for(int i=0; i<=moduleMachineStates.length; i++)
-      {
-        moduleMachineConso = (await m_bdd.getConsoModule(sectorId, true, moduleMachineStates[i] as String, 'machine'));
+    for (String key in moduleMachineStates.keys) {
+      if (moduleMachineStates[key] == true) {
+        Map<String, double> conso = await m_bdd.getConsoModule(sectorId, true, key, 'machine');
+        moduleMachineConso.addAll(conso);
         print('$moduleMachineConso');
       }
+    }
 
-    for(int i=0; i<=moduleScreenStates.length; i++)
-    {
-      moduleScreenConso = (await m_bdd.getConsoModule(sectorId, true, moduleScreenStates[i] as String, 'ecran'));
-      print('$moduleScreenConso');
+    for (String key in moduleScreenStates.keys) {
+      if (moduleScreenStates[key] == true) {
+        Map<String, double> conso = await m_bdd.getConsoModule(sectorId, true, key, 'ecran');
+        moduleScreenConso.addAll(conso);
+        print('$moduleScreenConso');
+      }
     }
 
     return SectorData(

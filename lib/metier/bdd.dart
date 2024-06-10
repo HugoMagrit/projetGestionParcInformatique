@@ -81,71 +81,70 @@ class DataBase
   Future<Map<String, double>> getConsoModule(int numSector, bool time, String module, String typeModule) async
   {
     final Connection conn = await connectionBdD();
-    Map<String, double> siNULL = [-1.0] as Map<String, double>;
-    Map<String, double> conso = [] as Map<String, double>;
-    Map<String, dynamic> result = {};
-    try {
-      if (time == true) {
-        if (typeModule == "machine")
-        {
-          final request = await conn.execute(
-              'SELECT module_machine_mac, conso_module FROM mesures WHERE secteur_id=$numSector AND module_machine_mac=$module ORDER BY date_conso_module DESC LIMIT 1'
-          );
-          conso[request.first[1] as String] = request.first[0] as double;
-          print('Consommation $conso');
-          return conso;
-        }
-
-        else if (typeModule == "ecran")
-        {
-          final request = await conn.execute(
-              'SELECT module_ecran_mac, conso_module FROM mesures WHERE secteur_id=$numSector AND module_ecran_mac=$module ORDER BY date_conso_module DESC LIMIT 1'
-          );
-          conso[request.first[1] as String] = request.first[0] as double;
-          print('Consommation $conso');
-          return conso;
-        }
-
-        else
-          {
-            return siNULL;
-          }
-      }
-      else
+    Map<String, double> conso = {};
+    Map<String, double> siNULL = {module: -1};
+    try
+    {
+      if (time)
       {
         if (typeModule == "machine")
         {
-          conso = (await conn.execute(
-              'SELECT module_machine_mac, conso_module FROM mesures WHERE secteur_id=$numSector AND module_machine_mac=$module ORDER BY date_conso_module DESC LIMIT 1'
-          )) as Map<String, double>;
-          return conso;
+          final request = await conn.execute(
+              'SELECT module_machine_mac, conso_module FROM mesures WHERE secteur_id=$numSector AND module_machine_mac=\'$module\' ORDER BY date_conso_module DESC LIMIT 1'
+          );
+          print('Requêt: $request');
+          for (final row in request)
+          {
+            if(row[1] != null)
+            {
+              print('Consommation: $conso');
+              conso[row[0] as String] = row[1] as double;
+            }
+            else
+            {
+              return siNULL;
+            }
+          }
         }
-
         else if (typeModule == "ecran")
         {
-          conso = (await conn.execute(
-              'SELECT module_ecran_man, conso_module FROM mesures WHERE secteur_id=$numSector AND module_ecran_mac=$module ORDER BY date_conso_module DESC LIMIT 1'
-          )) as Map<String, double>;
-          return conso;
-        }
-
-        else
+          final request = await conn.execute(
+              'SELECT module_ecran_mac, conso_module FROM mesures WHERE secteur_id=$numSector AND module_ecran_mac=\'$module\' ORDER BY date_conso_module DESC LIMIT 1'
+          );
+          print('Requête: $request');
+          for (final row in request)
           {
-            return siNULL;
+            if(row[1] != null)
+            {
+              print('Consommation: $conso');
+              conso[row[0] as String] = row[1] as double;
+            }
+            else
+            {
+              return siNULL;
+            }
           }
+        }
+        else
+        {
+          return {};
+        }
+      }
+      else
+      {
+        // Logique pour la récupération des consommations non instantanées
       }
     }
-
     catch (e)
     {
       print('Erreur lors de la récupération de la consommation du module $module: $e');
       return siNULL;
     }
-
     finally
-        {
-          await conn.close();
-        }
+    {
+      await conn.close();
+    }
+    return conso;
   }
 
   // Récupère les états en fonction de ce qu'on veut

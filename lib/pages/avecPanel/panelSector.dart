@@ -22,7 +22,7 @@ class PanelSector extends StatelessWidget {
       child: Column(
         children: [
           SizedBox(
-            height: 150,
+            height: 250,
             width: double.infinity,
                   child: Center(
                     child: Column(
@@ -53,23 +53,66 @@ class PanelSector extends StatelessWidget {
 
                             List<Widget> buttons = [];
 
+                            Icon getIcon(bool? state) {
+                              if (state == null)
+                              {
+                                return const Icon(Icons.hourglass_empty, color: Colors.grey);
+                              }
+                              else if (state)
+                              {
+                                return const Icon(Icons.check_circle, color: Colors.green);
+                              }
+                              else
+                              {
+                                return const Icon(Icons.cancel, color: Colors.red);
+                              }
+                            }
+
                             // Boutons pour les modules machines
                             sectorDataList.moduleMachineState.forEach((key, value)
                             {
-                              buttons.add(ElevatedButton(
-                                onPressed: () {},
-                                child: Text('Machine: $key'),
-                              ));
+                              final conso = sectorDataList.moduleMachineConso[key] ?? -1.0;
+                              buttons.add(
+                                  Row(
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () {},
+                                          child: Text('Module machine: $key, Consommation: $conso'),
+                                        ),
+                                        ElevatedButton(
+                                            onPressed: ()
+                                            {
+                                              //TODO
+                                            },
+                                            child: getIcon(value)
+                                        )
+                                      ]
+                                  )
+                              );
                             }
                             );
 
                             // Boutons pour les modules écrans
                             sectorDataList.moduleScreenState.forEach((key, value)
                             {
-                              buttons.add(ElevatedButton(
-                                onPressed: () {},
-                                child: Text('Écran: $key'),
-                              ));
+                              final conso = sectorDataList.moduleScreenConso[key] ?? -1.0;
+                              buttons.add(
+                                Row(
+                                  children: [
+                                  ElevatedButton(
+                                    onPressed: () {},
+                                    child: Text('Module écran: $key, Consommation: $conso'),
+                                  ),
+                                  ElevatedButton(
+                                      onPressed: ()
+                                      {
+                                        //TODO
+                                      },
+                                      child: getIcon(value)
+                                  )
+                              ]
+                                )
+                              );
                             });
 
                             return Wrap(
@@ -84,15 +127,6 @@ class PanelSector extends StatelessWidget {
                   ),
                   ),
             ),
-
-          Container(
-              child: const Column(
-                children: [
-                  Text('Consommation des différents modules', style: TextStyle(color: Colors.blueGrey)),
-
-                  ]
-                )
-              ),
 
           Container(
               child: Text('Activer modules machines', style: TextStyle(color: Colors.blueGrey),)
