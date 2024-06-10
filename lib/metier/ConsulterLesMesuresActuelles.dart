@@ -28,6 +28,20 @@ class ConsulterLesMesuresActuelles
     List<double> consos = await m_bdd.getConso(true, sectorId);
     Map<String, bool> moduleMachineStates = await m_bdd.getState("moduleMachine", sectorId);
     Map<String, bool> moduleScreenStates = await m_bdd.getState("moduleScreen", sectorId);
+    Map<String, double> moduleMachineConso = [] as Map<String, double>;
+    Map<String, double> moduleScreenConso = [] as Map<String, double>;
+
+    for(int i=0; i<=moduleMachineStates.length; i++)
+      {
+        moduleMachineConso = (await m_bdd.getConsoModule(sectorId, true, moduleMachineStates[i] as String, 'machine'));
+        print('$moduleMachineConso');
+      }
+
+    for(int i=0; i<=moduleScreenStates.length; i++)
+    {
+      moduleScreenConso = (await m_bdd.getConsoModule(sectorId, true, moduleScreenStates[i] as String, 'ecran'));
+      print('$moduleScreenConso');
+    }
 
     return SectorData(
       sectorId: sectorId,
@@ -35,20 +49,9 @@ class ConsulterLesMesuresActuelles
       consosSector: consos,
       moduleMachineState: moduleMachineStates,
       moduleScreenState: moduleScreenStates,
+      moduleMachineConso: moduleMachineConso,
+      moduleScreenConso: moduleScreenConso,
     );
-  }
-
-  Future<bool> getStateSector(int sectorId) async
-  {
-    Map<String, bool> stateMap = await m_bdd.getState("sector", sectorId);
-    bool state = stateMap[sectorId.toString()] ?? false;
-    return state;
-  }
-
-  Future<double> getConso(int sectorId) async
-  {
-    final consos = await m_bdd.getConso(true, sectorId);
-    return consos.isNotEmpty ? consos.first : 0.0;
   }
 
   void startTimer(Duration duration, Function(List<SectorData>) updateSectorDataList)
@@ -73,6 +76,8 @@ class SectorData
   List<double> consosSector;
   Map<String, bool> moduleMachineState;
   Map<String, bool> moduleScreenState;
+  Map<String, double> moduleMachineConso;
+  Map<String, double> moduleScreenConso;
 
   SectorData(
       {
@@ -81,6 +86,8 @@ class SectorData
         required this.consosSector,
         required this.moduleMachineState,
         required this.moduleScreenState,
+        required this.moduleMachineConso,
+        required this.moduleScreenConso,
       }
       );
 }

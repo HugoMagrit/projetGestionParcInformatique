@@ -78,28 +78,31 @@ class DataBase
   }
 
   // Récupère la consommation des modules
-  Future<List<double>> getConsoModule(int numSector, bool time, String module, String typeModule) async
+  Future<Map<String, double>> getConsoModule(int numSector, bool time, String module, String typeModule) async
   {
     final Connection conn = await connectionBdD();
-    List<double> siNULL = [-1.0];
-    List<double> conso = [];
+    Map<String, double> siNULL = [-1.0] as Map<String, double>;
+    Map<String, double> conso = [] as Map<String, double>;
+    Map<String, dynamic> result = {};
     try {
       if (time == true) {
         if (typeModule == "machine")
         {
           final request = await conn.execute(
-              'SELECT conso_module FROM mesures WHERE secteur_id=$numSector AND module_machine_mac=$module ORDER BY date_conso_module DESC LIMIT 1'
+              'SELECT module_machine_mac, conso_module FROM mesures WHERE secteur_id=$numSector AND module_machine_mac=$module ORDER BY date_conso_module DESC LIMIT 1'
           );
-          conso.add(request.first[0] as double);
+          conso[request.first[1] as String] = request.first[0] as double;
+          print('Consommation $conso');
           return conso;
         }
 
         else if (typeModule == "ecran")
         {
           final request = await conn.execute(
-              'SELECT conso_module FROM mesures WHERE secteur_id=$numSector AND module_ecran_mac=$module ORDER BY date_conso_module DESC LIMIT 1'
+              'SELECT module_ecran_mac, conso_module FROM mesures WHERE secteur_id=$numSector AND module_ecran_mac=$module ORDER BY date_conso_module DESC LIMIT 1'
           );
-          conso.add(request.first[0] as double);
+          conso[request.first[1] as String] = request.first[0] as double;
+          print('Consommation $conso');
           return conso;
         }
 
@@ -112,16 +115,18 @@ class DataBase
       {
         if (typeModule == "machine")
         {
-          return conso = await conn.execute(
-              'SELECT conso_module FROM mesures WHERE secteur_id=$numSector AND module_machine_mac=$module ORDER BY date_conso_module DESC LIMIT 1'
-          ) as List<double>;
+          conso = (await conn.execute(
+              'SELECT module_machine_mac, conso_module FROM mesures WHERE secteur_id=$numSector AND module_machine_mac=$module ORDER BY date_conso_module DESC LIMIT 1'
+          )) as Map<String, double>;
+          return conso;
         }
 
         else if (typeModule == "ecran")
         {
-          return conso = await conn.execute(
-              'SELECT conso_module FROM mesures WHERE secteur_id=$numSector AND module_ecran_mac=$module ORDER BY date_conso_module DESC LIMIT 1'
-          ) as List<double>;
+          conso = (await conn.execute(
+              'SELECT module_ecran_man, conso_module FROM mesures WHERE secteur_id=$numSector AND module_ecran_mac=$module ORDER BY date_conso_module DESC LIMIT 1'
+          )) as Map<String, double>;
+          return conso;
         }
 
         else

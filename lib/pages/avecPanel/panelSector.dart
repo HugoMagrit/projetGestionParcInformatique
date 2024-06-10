@@ -24,9 +24,6 @@ class PanelSector extends StatelessWidget {
           SizedBox(
             height: 150,
             width: double.infinity,
-                child: SizedBox(
-                  height: 150,
-                  width: double.infinity,
                   child: Center(
                     child: Column(
                       children: [
@@ -86,13 +83,13 @@ class PanelSector extends StatelessWidget {
                     ],
                   ),
                   ),
-                ),
             ),
 
           Container(
               child: const Column(
                 children: [
-                  Text('Consommation des différents modules', style: TextStyle(color: Colors.blueGrey),)
+                  Text('Consommation des différents modules', style: TextStyle(color: Colors.blueGrey)),
+
                   ]
                 )
               ),
