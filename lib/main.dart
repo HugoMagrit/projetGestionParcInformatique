@@ -18,8 +18,8 @@ class MyApp extends StatelessWidget
   Widget build(BuildContext context)
   {
     // Initialisation de l'objet BdD et consulterLesMesuresActuelles
-    DataBase bdd = DataBase();
-    ConsulterLesMesuresActuelles consulterLesMesuresActuelles = ConsulterLesMesuresActuelles(bdd);
+    DataBase m_bdd = DataBase();
+    ConsulterLesMesuresActuelles consulterLesMesuresActuelles = ConsulterLesMesuresActuelles(m_bdd);
 
     // Affichage de l'application
     return MaterialApp(

@@ -31,7 +31,7 @@ class ButtonSectorState extends State<ButtonSector>
   {
     super.initState();
     widget.consulterLesMesuresActuelles.startTimer(
-        const Duration(seconds: 300),
+        const Duration(seconds: 60),
             (List<SectorData> newSectorDataList)
         {
           if (mounted) {
@@ -79,6 +79,7 @@ class ButtonSectorState extends State<ButtonSector>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text('Secteur ${widget.sector}', style: TextStyle(color: Colors.grey[300])),
+
           FutureBuilder(
             future: widget.consulterLesMesuresActuelles.getSectorData(widget.sector),
             builder: (context, snapshot)
@@ -115,15 +116,14 @@ class ButtonSectorState extends State<ButtonSector>
               }
               else
               {
-                final conso = snapshot.data!;
-                if(conso==-1)
+                final sectorDataList = snapshot.data!;
+                final conso = sectorDataList.consosSector.first;
+                if(conso==-1.0)
                 {
                   return const Text('Aucune données');
                 }
                 else
                 {
-                  final sectorDataList = snapshot.data!;
-                  final conso = sectorDataList.consosSector.first;
                   return Text('Consommation : ${conso}W', style: TextStyle(color: Colors.grey[300]));
                 }
               }

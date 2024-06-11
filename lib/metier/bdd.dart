@@ -38,7 +38,7 @@ class DataBase
 
     try
     {
-      if (time == true && conn.isOpen)
+      if (time == true)
       {
         final consoEcran = await conn.execute(
             'SELECT conso_module FROM mesures WHERE secteur_id=$numSector AND type_module=FALSE ORDER BY date_conso_module DESC LIMIT 1'
@@ -54,17 +54,12 @@ class DataBase
         return consos;
       }
 
-      else if(conn.isOpen)
+      else
       {
         final consos = await conn.execute(
             'SELECT conso_module FROM mesures WHERE secteur_id=$numSector AND type_module=FALSE AND date_conso_module >= NOW() - INTERVAL \'24 hour\' ORDER BY date_conso_module'
         ) as List<double>;
         return consos;
-      }
-
-      else
-      {
-        return siNULL;
       }
     }
     catch (e)
@@ -90,14 +85,13 @@ class DataBase
         if (typeModule == "machine")
         {
           final request = await conn.execute(
-              'SELECT module_machine_mac, conso_module FROM mesures WHERE secteur_id=$numSector AND module_machine_mac=\'$module\' ORDER BY date_conso_module DESC LIMIT 1'
+              'SELECT module_machine_mac, conso_module FROM mesures '
+                  'WHERE secteur_id=$numSector AND module_machine_mac=\'$module\' ORDER BY date_conso_module DESC LIMIT 1'
           );
-          print('Requêt: $request');
           for (final row in request)
           {
             if(row[1] != null)
             {
-              print('Consommation: $conso');
               conso[row[0] as String] = row[1] as double;
             }
             else
@@ -109,14 +103,13 @@ class DataBase
         else if (typeModule == "ecran")
         {
           final request = await conn.execute(
-              'SELECT module_ecran_mac, conso_module FROM mesures WHERE secteur_id=$numSector AND module_ecran_mac=\'$module\' ORDER BY date_conso_module DESC LIMIT 1'
+              'SELECT module_ecran_mac, conso_module FROM mesures '
+                  'WHERE secteur_id=$numSector AND module_ecran_mac=\'$module\' ORDER BY date_conso_module DESC LIMIT 1'
           );
-          print('Requête: $request');
           for (final row in request)
           {
             if(row[1] != null)
             {
-              print('Consommation: $conso');
               conso[row[0] as String] = row[1] as double;
             }
             else
@@ -197,7 +190,7 @@ class DataBase
 
         case "machine":
           final request = await conn.execute(
-              'SELECT etat_machine, ip_machine FROM machine WHERE module_machine_mac=(SELECT mac_module_machine FROM module_machine WHERE secteur_id=$numSector);'
+              'SELECT ip_machine, etat_machine FROM machine WHERE module_machine_mac=(SELECT mac_module_machine FROM module_machine WHERE secteur_id=$numSector);'
           );
           for (final row in request)
           {
@@ -234,5 +227,13 @@ class DataBase
      }
      await conn.close();
      return retour;
+  }
+
+  Future<void> updateState(int secteur_n, bool etat, String nom_etat) async
+  {
+    final Connection conn = await connectionBdD();
+    await conn.execute(
+      'UPDATE secteur SET etat_demande_secteur=$etat WHERE id_secteur=$secteur_n'
+    );
   }
 }

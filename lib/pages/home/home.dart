@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage>
   {
     super.initState();
     sectorButtons();
-    widget.consulterLesMesuresActuelles.startTimer(const Duration(seconds: 300), (List<SectorData> newSectorDataList)
+    widget.consulterLesMesuresActuelles.startTimer(const Duration(seconds: 60), (List<SectorData> newSectorDataList)
     {
       setState(()
       {
